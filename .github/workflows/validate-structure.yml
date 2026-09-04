@@ -1,0 +1,57 @@
+name: Validate Repository Structure
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check /docs folder exists
+        run: |
+          if [ ! -d "docs" ]; then
+            echo "ERROR: /docs folder is missing"
+            exit 1
+          fi
+          echo "docs folder found"
+
+      - name: Check ERD file exists
+        run: |
+          if ! ls docs/*erd* 1> /dev/null 2>&1 && ! ls docs/*ERD* 1> /dev/null 2>&1; then
+            echo "ERROR: ERD file not found in /docs"
+            exit 1
+          fi
+          echo "ERD file found"
+
+      - name: Check API endpoint plan exists
+        run: |
+          if ! ls docs/*endpoint* 1> /dev/null 2>&1 && ! ls docs/*api* 1> /dev/null 2>&1; then
+            echo "ERROR: API endpoint plan not found in /docs"
+            exit 1
+          fi
+          echo "API endpoint plan found"
+
+      - name: Check SQL script exists
+        run: |
+          if ! ls docs/*.sql 1> /dev/null 2>&1; then
+            echo "ERROR: SQL script not found in /docs"
+            exit 1
+          fi
+          echo "SQL script found"
+
+      - name: Check README exists
+        run: |
+          if [ ! -f "README.md" ]; then
+            echo "ERROR: README.md is missing from repository root"
+            exit 1
+          fi
+          echo "README.md found"
+
+      - name: All checks passed
+        run: echo "Repository structure is valid - all required files present"
