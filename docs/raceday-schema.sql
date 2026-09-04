@@ -125,3 +125,4 @@ GO
 CREATE INDEX IX_Event_OrganiserId ON Event(OrganiserId);
 CREATE INDEX IX_Enrolment_EventCategory ON Enrolment(EventId, CategoryId);
 ALTER TABLE Result ADD CONSTRAINT CHK_Result_Position CHECK (Position 
+INSERT INTO [User] (Email, PasswordHash, Role) VALUES ('participant3@raceday.com', 'hashed_password_4', 'Participant');
