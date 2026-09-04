@@ -1,146 +1,35 @@
-# ⚡ FastPay
+# RaceDay System
 
-> **Tip creators. Pay freelancers. Donate to causes.**
-> Human-readable payments on Solana — no wallet addresses needed.
+A race event management system supporting event organisers and participants, built as part of PROG6212 POE (Part 1: System Planning and Database).
 
----
+## Part 1 — System Planning and Database
 
-## 🧠 The Problem
+This part covers the planning phase only. No API code is included yet — that begins in Part 2.
 
-Web3 wallet addresses look like this:
+### Contents
 
-```
-7xKp3mNqRs8vBtWzYeLdFgHjKoMnPqRs3mNq
-```
+- `docs/raceday_erd.png` — Entity Relationship Diagram (6 entities: User, UserProfile, Event, Category, Enrolment, Result)
+- `docs/api-endpoint-plan.md` — Full REST API endpoint plan covering Authentication, User Profile, Events, Categories, Enrolments, and Results
+- `docs/raceday-schema.sql` — SQL script to create and populate the database schema, matching the ERD exactly
 
-One wrong character and your money is gone forever. This is the #1 reason everyday people don't use crypto for payments like tipping a creator, paying a freelancer, or donating to a cause.
+### Setup and run instructions (database)
 
-## ✅ Our Solution
+1. Open SQL Server Management Studio (SSMS).
+2. Connect to your local SQL Server instance.
+3. Open `docs/raceday-schema.sql`.
+4. Execute the script — this creates the `RaceDayDB` database, all six tables, and inserts sample data.
+5. Verify by running `SELECT * FROM [User];` and checking the other tables populate correctly.
 
-FastPay abstracts wallet addresses into:
+## Roles
 
-- **Human-readable usernames** → `@malebo`
-- **Simple payment links** → `fastpay.id/@malebo`
-- **Dynamic QR codes** → scan and pay in one tap via Phantom
+The system supports two distinct user roles:
 
-No errors. No confusion. One click.
+- **Organiser** — can create, edit, and delete events, manage event categories, capture participant results, and view all event enrolments.
+- **Participant** — can create an account, browse events, enrol in an event by selecting a category, view their own enrolments, and track their personal results.
 
----
+Role-based access will be enforced at the API level in Part 2 and reflected consistently in the MVC interface in Part 3.
 
-## 🚀 Tech Stack
+## Notes
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | React 18 + Vite |
-| Styling | Tailwind CSS v3 |
-| Blockchain | Solana (Devnet) |
-| Wallet | Phantom Wallet |
-| Icons | Tabler Icons React |
-
----
-
-## 🎯 Use Cases
-
-- 🎨 **Creator tipping** — streamers, YouTubers, artists receive SOL tips via QR on screen
-- 💼 **Freelancer invoicing** — share a payment link in WhatsApp, no bank details needed
-- 🌍 **Donations** — charities and causes accept borderless crypto donations instantly
-
----
-
-## 📁 Project Structure
-
-```
-src/
-├── components/
-│   ├── Topbar.jsx          # Navigation bar + Phantom connect
-│   ├── Sidebar.jsx         # Left nav + wallet balance card
-│   ├── PhantomModal.jsx    # Animated wallet connection flow
-│   └── SuccessOverlay.jsx  # Payment success screen
-├── pages/
-│   ├── TipPage.jsx         # Search user + send tip flow
-│   ├── Dashboard.jsx       # Earnings charts + activity feed
-│   ├── History.jsx         # Full transaction table
-│   ├── Profile.jsx         # User identity settings
-│   └── QRPage.jsx          # QR code + dynamic invoice
-├── data/
-│   └── users.js            # Mock user + transaction data
-├── App.jsx                 # Root component + page routing
-└── index.css               # Tailwind directives + custom classes
-```
-
----
-
-## 🛠️ Getting Started
-
-### Prerequisites
-- Node.js v18+
-- npm v9+
-- Git
-
-### Installation
-
-```bash
-# Clone the repo
-git clone https://github.com/codingwithlebo/fastpay-ui.git
-
-# Navigate into the project
-cd fastpay-ui
-
-# Install dependencies
-npm install
-
-# Start the dev server
-npm run dev
-```
-
-Open **http://localhost:5173** in your browser.
-
----
-
-## 🎮 Demo Flow
-
-1. Go to **Send Tip** page
-2. Search for `@malebo`, `@dev_rizky`, or `@jacob_codes`
-3. Select an amount and click **Send via Phantom**
-4. Watch the success screen — transaction confirmed on Solana devnet
-5. Check **Dashboard** for live charts and activity
-6. Check **QR Code** page to see your shareable payment link
-
----
-
-## 🗺️ Roadmap
-
-- [x] Frontend UI — React + Tailwind
-- [x] Username search + profile lookup
-- [x] Phantom wallet connection flow
-- [x] QR code generation
-- [ ] Real Phantom wallet integration (`@solana/web3.js`)
-- [ ] Username → wallet address database (Supabase)
-- [ ] On-chain transaction signing
-- [ ] Mainnet deployment
-
----
-
-## 👥 Team
-
-Built at the **Dev3pack Global Web3 Hackathon 2026**
-
-| Name | Role |
-|------|------|
-| Malebo Nkuna | Frontend · UI/UX · Pitch |
-| Rizky Januar | Solana · Smart Contracts |
-| Jacob Mensah | Backend · APIs · n8n |
-
----
-
-## 📄 License
-
-MIT — free to use, modify, and build on.
-
----
-
-> *"The best Web3 UX is the one that doesn't feel like Web3 at all."*
-
-## System Description
-RaceDay is a race event management platform where organisers create and manage races, and participants discover events, enrol in categories, and track their results.
-
+- Part 2 will add the RESTful API in C#, connected to this database, with unit tests and GitHub Actions CI/CD.
+- Part 3 will add the MVC web application, Azure Blob Storage integration, and Docker containerisation.
