@@ -2,7 +2,25 @@
 -- RaceDay System - Database Schema
 -- Matches ERD in /docs/raceday_erd.png
 -- ============================================
+/*
+    RaceDay Database Schema
+    PROG6212 POE - Part 1
 
+    Purpose:
+    Creates and populates the RaceDayDB relational database.
+
+    Main entities:
+    User
+    UserProfile
+    Event
+    Category
+    Enrolment
+    Result
+
+    The schema follows the RaceDay ERD and includes
+    primary keys, foreign keys, constraints, indexes,
+    and sample data for testing.
+*/
 CREATE DATABASE RaceDayDB;
 GO
 
