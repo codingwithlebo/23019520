@@ -9,6 +9,7 @@ on:
 jobs:
   validate-docs:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -23,24 +24,24 @@ jobs:
 
       - name: Check ERD file exists
         run: |
-          if ! ls docs/*erd* 1> /dev/null 2>&1 && ! ls docs/*ERD* 1> /dev/null 2>&1; then
-            echo "ERROR: ERD file not found in /docs"
+          if [ ! -f "docs/raceday_erd.png" ]; then
+            echo "ERROR: docs/raceday_erd.png is missing"
             exit 1
           fi
           echo "ERD file found"
 
       - name: Check API endpoint plan exists
         run: |
-          if ! ls docs/*endpoint* 1> /dev/null 2>&1 && ! ls docs/*api* 1> /dev/null 2>&1; then
-            echo "ERROR: API endpoint plan not found in /docs"
+          if [ ! -f "docs/api-endpoint-plan.md" ]; then
+            echo "ERROR: docs/api-endpoint-plan.md is missing"
             exit 1
           fi
           echo "API endpoint plan found"
 
       - name: Check SQL script exists
         run: |
-          if ! ls docs/*.sql 1> /dev/null 2>&1; then
-            echo "ERROR: SQL script not found in /docs"
+          if [ ! -f "docs/raceday-schema.sql" ]; then
+            echo "ERROR: docs/raceday-schema.sql is missing"
             exit 1
           fi
           echo "SQL script found"
@@ -53,5 +54,24 @@ jobs:
           fi
           echo "README.md found"
 
+      - name: Validate SQL script is not empty
+        run: |
+          if [ ! -s "docs/raceday-schema.sql" ]; then
+            echo "ERROR: SQL script is empty"
+            exit 1
+          fi
+          echo "SQL script contains content"
+
+      - name: Validate API plan is not empty
+        run: |
+          if [ ! -s "docs/api-endpoint-plan.md" ]; then
+            echo "ERROR: API endpoint plan is empty"
+            exit 1
+          fi
+          echo "API endpoint plan contains content"
+
       - name: All checks passed
-        run: echo "Repository structure is valid - all required files present"
+        run: |
+          echo "Repository structure is valid"
+          echo "All required RaceDay documentation files are present"
+          echo "CI validation completed successfully"
