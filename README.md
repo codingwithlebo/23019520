@@ -86,6 +86,22 @@ The RaceDay database contains six main entities:
 4. **Category** — stores categories available within an event.
 5. **Enrolment** — records participants enrolled in event categories.
 6. **Result** — stores the results achieved by enrolled participants.
+## ERD Design Decisions
+
+The RaceDay ERD was designed around the main relationships required by the race event management system.
+
+* **User → UserProfile:** A user can have one profile containing additional personal information.
+* **User → Event:** An organiser can create and manage multiple events, while each event has one organiser.
+* **Event → Category:** An event can contain multiple race categories, while each category belongs to one event.
+* **User → Enrolment:** A participant can have multiple enrolments across events.
+* **Event → Enrolment:** An event can have multiple participant enrolments.
+* **Category → Enrolment:** Each enrolment is associated with a specific event category.
+* **Enrolment → Result:** An enrolment can have a race result recorded after the participant completes the event.
+
+Primary keys uniquely identify records in each entity, while foreign keys maintain relationships between related entities and help preserve referential integrity.
+
+The design separates user information, events, categories, enrolments, and results into independent entities to reduce duplication and make the database easier to maintain and extend in later parts of the project.
+
 
 The Entity Relationship Diagram is available in:
 
