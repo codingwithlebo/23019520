@@ -24,6 +24,15 @@
 |GET|/api/results/me|View own results|Participant|—|200 OK + list|
 |GET|/api/events/{eventId}/results|View all results for an event|Public/Organiser|—|200 OK + list|
 |## Role Definitions<br /><br />\| Role \| Responsibilities \|<br />\|---\|---\|<br />\| Organiser \| Create and manage events, manage event categories, view enrolments, and capture or update race results. \|<br />\| Participant \| Register for events, manage their profile, view their enrolments, and view their race results. \|<br />\| Public \| Register or log in and view publicly available events, categories, and results. \|||||||
+## Common API Error Responses
+
+| Status Code      | Meaning                                                 | Example                                                      |
+| ---------------- | ------------------------------------------------------- | ------------------------------------------------------------ |
+| 400 Bad Request  | The request data is invalid or incomplete.              | Missing required event information                           |
+| 401 Unauthorized | Authentication is required or the token is invalid.     | User tries to access a protected endpoint without logging in |
+| 403 Forbidden    | The user is authenticated but does not have permission. | Participant tries to create an event                         |
+| 404 Not Found    | The requested resource does not exist.                  | Event ID does not exist                                      |
+| 409 Conflict     | The request conflicts with existing data.               | Participant tries to enrol in the same event category twice  |
 
 
 
