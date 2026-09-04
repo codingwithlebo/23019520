@@ -1,3 +1,4 @@
+```yaml
 name: Validate Repository Structure
 
 on:
@@ -65,13 +66,22 @@ jobs:
       - name: Validate API plan is not empty
         run: |
           if [ ! -s "docs/api-endpoint-plan.md" ]; then
-            echo "ERROR: API endpoint plan is empty"
+            echo "ERROR: docs/api-endpoint-plan.md is empty"
             exit 1
           fi
           echo "API endpoint plan contains content"
+
+      - name: Validate ERD file is not empty
+        run: |
+          if [ ! -s "docs/raceday_erd.png" ]; then
+            echo "ERROR: ERD file is empty"
+            exit 1
+          fi
+          echo "ERD file contains content"
 
       - name: All checks passed
         run: |
           echo "Repository structure is valid"
           echo "All required RaceDay documentation files are present"
           echo "CI validation completed successfully"
+```
