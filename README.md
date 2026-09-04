@@ -4,13 +4,13 @@ A race event management system supporting event organisers and participants, bui
 
 ## Part 1 — System Planning and Database
 
-This part covers the planning phase only. No API code is included yet — that begins in Part 2.
+This part covers the planning phase and database design for the RaceDay System. The REST API and web application will be implemented in later parts of the project.
 
 ### Contents
 
 * `docs/raceday_erd.png` — Entity Relationship Diagram containing 6 entities: User, UserProfile, Event, Category, Enrolment, and Result.
-* `docs/api-endpoint-plan.md` — Full REST API endpoint plan covering Authentication, User Profile, Events, Categories, Enrolments, and Results.
-* `docs/raceday-schema.sql` — SQL script to create and populate the database schema, matching the ERD.
+* `docs/api-endpoint-plan.md` — REST API endpoint plan covering Authentication, User Profile, Events, Categories, Enrolments, and Results.
+* `docs/raceday-schema.sql` — SQL script to create and populate the RaceDay database schema.
 
 ## Project Structure
 
@@ -22,7 +22,8 @@ This part covers the planning phase only. No API code is included yet — that b
 ├── docs/
 │   ├── raceday_erd.png
 │   ├── api-endpoint-plan.md
-│   └── raceday-schema.sql
+│   ├── raceday-schema.sql
+│   └── github-actions-success.png
 ├── .gitignore
 └── README.md
 ```
@@ -32,10 +33,11 @@ The `/docs` directory contains the main Part 1 planning and database deliverable
 ## Setup and Run Instructions (Database)
 
 1. Open SQL Server Management Studio (SSMS).
-2. Connect to your local SQL Server instance.
+2. Connect to the local SQL Server instance.
 3. Open `docs/raceday-schema.sql`.
-4. Execute the script. This creates the `RaceDayDB` database, all six tables, and inserts sample data.
-5. Verify the database by running:
+4. Execute the script.
+5. The script creates the `RaceDayDB` database, all six tables, constraints, indexes, and sample data.
+6. Verify the database by running:
 
 ```sql
 SELECT * FROM [User];
@@ -50,16 +52,18 @@ The sample data should populate the tables correctly.
 
 ## Roles
 
-The system supports two distinct user roles:
+The system supports two main user roles:
 
-* **Organiser** — can create, edit, and delete events, manage event categories, capture participant results, and view all event enrolments.
-* **Participant** — can create an account, browse events, enrol in an event by selecting a category, view their own enrolments, and track their personal results.
+* **Organiser** — can create, edit, and delete events, manage event categories, capture participant results, and view event enrolments.
+* **Participant** — can create an account, browse events, enrol in an event category, view their enrolments, and track their personal results.
+
+Public users can register, log in, and view publicly available event information.
 
 Role-based access will be enforced at the API level in Part 2 and reflected consistently in the MVC interface in Part 3.
 
 ## API Planning
 
-The REST API has been planned before implementation to ensure that the Part 2 development follows a clear structure.
+The REST API has been planned before implementation to provide a clear structure for Part 2 development.
 
 The endpoint plan covers:
 
@@ -86,6 +90,15 @@ The RaceDay database contains six main entities:
 4. **Category** — stores categories available within an event.
 5. **Enrolment** — records participants enrolled in event categories.
 6. **Result** — stores the results achieved by enrolled participants.
+
+The Entity Relationship Diagram is available in:
+
+`docs/raceday_erd.png`
+
+The database schema and sample data are available in:
+
+`docs/raceday-schema.sql`
+
 ## ERD Design Decisions
 
 The RaceDay ERD was designed around the main relationships required by the race event management system.
@@ -100,20 +113,11 @@ The RaceDay ERD was designed around the main relationships required by the race 
 
 Primary keys uniquely identify records in each entity, while foreign keys maintain relationships between related entities and help preserve referential integrity.
 
-The design separates user information, events, categories, enrolments, and results into independent entities to reduce duplication and make the database easier to maintain and extend in later parts of the project.
-
-
-The Entity Relationship Diagram is available in:
-
-`docs/raceday_erd.png`
-
-The database schema and sample data are available in:
-
-`docs/raceday-schema.sql`
+The design separates users, profiles, events, categories, enrolments, and results into independent entities to reduce data duplication and make the database easier to maintain and extend.
 
 ## GitHub Actions CI/CD
 
-A GitHub Actions workflow is included to validate the repository structure automatically.
+A GitHub Actions workflow is included to automatically validate the repository structure.
 
 The workflow checks that:
 
@@ -124,14 +128,23 @@ The workflow checks that:
 * The README exists.
 * The SQL script contains content.
 * The API endpoint plan contains content.
+* The ERD file contains content.
 
 Workflow file:
 
 `.github/workflows/validate-structure.yml`
 
-A successful workflow run demonstrates that the required Part 1 repository structure has passed automated validation.
+The latest GitHub Actions validation completed successfully, demonstrating that the required repository structure passed the automated checks.
 
-<!-- Add the successful GitHub Actions screenshot here before final submission. -->
+### Successful GitHub Actions Build
+
+![Successful GitHub Actions build](docs/github-actions-success.png)
+
+## Video Demonstration
+
+The following unlisted YouTube video demonstrates the RaceDay Part 1 planning and database implementation, including the database design and SQL Server Management Studio demonstration.
+
+[Watch the RaceDay System demonstration](https://youtu.be/MgApJHHrRmg)
 
 ## Future Development
 
@@ -169,5 +182,7 @@ The repository contains the required Part 1 planning and database deliverables:
 * SQL database creation and population script
 * README documentation
 * GitHub Actions repository validation workflow
+* Successful CI/CD validation
+* Video demonstration
 
 The implementation of the API and web application will follow the designs documented in this Part 1 repository.
