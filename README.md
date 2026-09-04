@@ -143,3 +143,4 @@ MIT — free to use, modify, and build on.
 
 ## System Description
 RaceDay is a race event management platform where organisers create and manage races, and participants discover events, enrol in categories, and track their results.
+
