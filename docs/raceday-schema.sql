@@ -123,3 +123,4 @@ INSERT INTO Result (EnrolmentId, FinishTime, Position, Points) VALUES
 (2, '01:45:10', 5, 95);
 GO
 CREATE INDEX IX_Event_OrganiserId ON Event(OrganiserId);
+CREATE INDEX IX_Enrolment_EventCategory ON Enrolment(EventId, CategoryId);
