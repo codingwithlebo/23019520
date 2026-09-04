@@ -124,3 +124,4 @@ INSERT INTO Result (EnrolmentId, FinishTime, Position, Points) VALUES
 GO
 CREATE INDEX IX_Event_OrganiserId ON Event(OrganiserId);
 CREATE INDEX IX_Enrolment_EventCategory ON Enrolment(EventId, CategoryId);
+ALTER TABLE Result ADD CONSTRAINT CHK_Result_Position CHECK (Position 
