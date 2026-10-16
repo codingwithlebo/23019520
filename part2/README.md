@@ -95,3 +95,16 @@ part2/
 - **403 Forbidden:** The user is authenticated but lacks the required permission.
 - **404 Not Found:** The requested resource or endpoint could not be found.
 - **500 Internal Server Error:** An unexpected error occurred on the server.
+
+## API Testing Checklist
+
+Before submitting or demonstrating the API, verify the following:
+
+- [ ] The application starts successfully.
+- [ ] The database connection works and migrations are applied.
+- [ ] Swagger loads and displays the available endpoints.
+- [ ] Registration and login work with valid input.
+- [ ] Invalid input is handled appropriately.
+- [ ] Protected endpoints reject unauthenticated requests.
+- [ ] Role-restricted endpoints enforce the required permissions.
+- [ ] Automated tests pass using `dotnet test part2/RaceDay.sln`.
