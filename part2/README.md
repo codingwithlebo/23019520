@@ -78,3 +78,10 @@ part2/
   RaceDay.Tests/      xUnit tests (WebApplicationFactory + in-memory database)
   RaceDay.sln
 ```
+
+## Troubleshooting
+
+- If the API cannot connect to SQL Server, verify the ConnectionStrings:RaceDayDb value in appsettings.json and confirm that the database server is running.
+- If an endpoint returns 401 Unauthorized, log in and check that the session cookie is being sent.
+- If an endpoint returns 403 Forbidden, check that the logged-in account has the required role and resource ownership.
+- If tests fail, run dotnet test part2/RaceDay.sln and inspect the first failing test and its error message.
