@@ -54,7 +54,7 @@ or **Test > Run All Tests** in Visual Studio. The tests start the real API in me
 
 GitHub Actions (`.github/workflows/part2-ci.yml`) restores, builds and runs all tests on every push.
 
-![Green build](docs/ci-green-build.png)
+![Green build](../docs/ci-green-build.png)
 
 ## Changes from the Part 1 plan
 
