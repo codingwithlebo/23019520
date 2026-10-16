@@ -13,7 +13,7 @@ Role-based access is enforced on the server with `[Authorize(Roles = ...)]`: an 
 
 - **Session-based.** `POST /api/auth/login` issues an HttpOnly session cookie holding the user's id and role. The cookie is sent automatically on later requests, and `POST /api/auth/logout` ends the session.
 - **Passwords are hashed** with salted PBKDF2 (SHA-256, 100 000 iterations). The plain-text password is never stored.
-- **Organiser registration needs an invite code** (`Registration:OrganiserCode` in `appsettings.json`, default `RACEDAY-ORG-2026`), so nobody can simply pick the Organiser role. Participants register freely.
+- **Organiser registration needs an invite code** (`Registration:OrganiserCode` in `appsettings.json`), so nobody can simply pick the Organiser role. Participants register freely.
 
 ## Setup and run
 
