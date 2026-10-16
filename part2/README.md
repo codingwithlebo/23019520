@@ -124,3 +124,14 @@ The API reads its application settings from `RaceDay.Api/appsettings.json`.
 - Do not commit real passwords, production credentials, or private organiser codes to source control.
 - Use environment variables or an appropriate secrets manager for sensitive deployment settings.
 - The API uses cookie-based authentication. After logging in, clients must send the session cookie when accessing protected endpoints.
+
+## Deployment Security Checklist
+
+Before deploying the API to a shared or production environment:
+
+- [ ] Use HTTPS to protect traffic between clients and the API.
+- [ ] Store sensitive configuration outside source control.
+- [ ] Use a database account with only the permissions the application needs.
+- [ ] Replace development database settings with environment-specific settings.
+- [ ] Verify authentication and role-based authorization for protected endpoints.
+- [ ] Review application logs to ensure passwords and secrets are not recorded.
