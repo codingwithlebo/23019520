@@ -108,3 +108,19 @@ Before submitting or demonstrating the API, verify the following:
 - [ ] Protected endpoints reject unauthenticated requests.
 - [ ] Role-restricted endpoints enforce the required permissions.
 - [ ] Automated tests pass using `dotnet test part2/RaceDay.sln`.
+
+## Configuration
+
+The API reads its application settings from `RaceDay.Api/appsettings.json`.
+
+- **ConnectionStrings:RaceDayDb:** Configures the SQL Server database connection. The default development configuration uses SQL Server LocalDB.
+- **Registration:OrganiserCode:** Configures the code required for organiser registration. Keep this value private and replace it with an appropriate value for each environment.
+- **Logging:LogLevel:** Controls the minimum log levels for the application and ASP.NET Core.
+- **AllowedHosts:** Specifies which host names the application accepts.
+
+### Configuration and Security Notes
+
+- Update the database connection string to match the environment where the API runs.
+- Do not commit real passwords, production credentials, or private organiser codes to source control.
+- Use environment variables or an appropriate secrets manager for sensitive deployment settings.
+- The API uses cookie-based authentication. After logging in, clients must send the session cookie when accessing protected endpoints.
