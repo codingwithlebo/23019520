@@ -85,3 +85,13 @@ part2/
 - If an endpoint returns 401 Unauthorized, log in and check that the session cookie is being sent.
 - If an endpoint returns 403 Forbidden, check that the logged-in account has the required role and resource ownership.
 - If tests fail, run dotnet test part2/RaceDay.sln and inspect the first failing test and its error message.
+
+## Common HTTP Response Codes
+
+- **200 OK:** The request completed successfully.
+- **201 Created:** A new resource was created successfully.
+- **400 Bad Request:** The request contains invalid data or is incorrectly formatted.
+- **401 Unauthorized:** Authentication is missing or invalid.
+- **403 Forbidden:** The user is authenticated but lacks the required permission.
+- **404 Not Found:** The requested resource or endpoint could not be found.
+- **500 Internal Server Error:** An unexpected error occurred on the server.
