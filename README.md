@@ -190,5 +190,4 @@ The implementation of the API and web application will follow the designs docume
 ## Part 2 - RESTful API
 See part2/README.md for the API setup, roles, tests and CI/CD. Changes from the Part 1 plan are listed at the bottom of docs/api-endpoint-plan.md.
 
-## Part 2 - RESTful API
-See part2/README.md for the API setup, roles, tests and CI/CD. Changes from the Part 1 plan are listed at the bottom of docs/api-endpoint-plan.md.
+
