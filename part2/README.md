@@ -68,7 +68,7 @@ Documented in full at the bottom of [`docs/api-endpoint-plan.md`](../docs/api-en
 
 ## Video
 
-YouTube (unlisted): _add link here_
+YouTube (unlisted): [Watch the RaceDay API Demonstration](https://youtu.be/Zdhd0I0u4us)
 
 ## Project structure
 

@@ -164,6 +164,8 @@ Planned features include:
 * Unit testing
 * GitHub Actions CI/CD
 
+**API Demonstration Video:** [Watch on YouTube](https://youtu.be/Zdhd0I0u4us)
+
 ### Part 3 — MVC Web Application
 
 Part 3 will add the MVC web application with:
