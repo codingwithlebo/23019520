@@ -135,3 +135,39 @@ Before deploying the API to a shared or production environment:
 - [ ] Replace development database settings with environment-specific settings.
 - [ ] Verify authentication and role-based authorization for protected endpoints.
 - [ ] Review application logs to ensure passwords and secrets are not recorded.
+
+## API Endpoint Reference
+
+The following endpoints are available in the RaceDay API. Endpoints marked as protected require authentication and the appropriate role.
+
+| Method | Endpoint | Access |
+|---|---|---|
+| POST | `/api/auth/register` | Public |
+| POST | `/api/auth/login` | Public |
+| POST | `/api/auth/logout` | Authenticated |
+| GET | `/api/events` | Public |
+| GET | `/api/events/{id}` | Public |
+| POST | `/api/events` | Organiser |
+| PUT | `/api/events/{id}` | Organiser |
+| DELETE | `/api/events/{id}` | Organiser |
+| GET | `/api/events/{eventId}/categories` | Public |
+| POST | `/api/events/{eventId}/categories` | Organiser |
+| PUT | `/api/categories/{id}` | Organiser |
+| DELETE | `/api/categories/{id}` | Organiser |
+| POST | `/api/enrolments` | Participant |
+| GET | `/api/enrolments/me` | Participant |
+| GET | `/api/events/{eventId}/enrolments` | Organiser |
+| DELETE | `/api/enrolments/{id}` | Participant |
+| GET | `/api/users/{id}/profile` | Authenticated |
+| PUT | `/api/users/{id}/profile` | Authenticated |
+| POST | `/api/results` | Organiser |
+| PUT | `/api/results/{id}` | Organiser |
+| GET | `/api/results/me` | Participant |
+| GET | `/api/events/{eventId}/results` | Authenticated |
+
+**Access notes:**
+- Public endpoints can be accessed without logging in.
+- Authenticated endpoints require a valid session.
+- Organiser and Participant endpoints require the corresponding role.
+- Resource ownership and other validation rules may also apply.
+- Use Swagger to inspect request bodies, parameters, and response details.
