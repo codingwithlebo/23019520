@@ -30,7 +30,7 @@ public class ResultsController(RaceDayDbContext db) : ControllerBase
     public async Task<IActionResult> CaptureResult(ResultRequest request)
     {
         var enrolment = await db.Enrolments
-            .Include(en => en.Event)
+            .Include(en => en.Event).Include(en => en.Category)
             .Include(en => en.Participant).ThenInclude(p => p!.Profile)
             .FirstOrDefaultAsync(en => en.Id == request.EnrolmentId);
         if (enrolment is null) return NotFound(new { message = "Enrolment not found." });
@@ -50,7 +50,8 @@ public class ResultsController(RaceDayDbContext db) : ControllerBase
         await db.SaveChangesAsync();
 
         result.Enrolment = enrolment;
-        return Created($"/api/results/{result.Id}", ToResponse(result));
+        var totals = await TotalsAsync(new[] { enrolment.EventId });
+        return Created($"/api/results/{result.Id}", ToResponse(result, totals));
     }
 
     /// <summary>Update a captured result (Organiser only).</summary>
@@ -70,6 +71,7 @@ public class ResultsController(RaceDayDbContext db) : ControllerBase
     {
         var result = await db.Results
             .Include(r => r.Enrolment).ThenInclude(en => en!.Event)
+            .Include(r => r.Enrolment).ThenInclude(en => en!.Category)
             .Include(r => r.Enrolment).ThenInclude(en => en!.Participant).ThenInclude(p => p!.Profile)
             .FirstOrDefaultAsync(r => r.Id == id);
         if (result is null) return NotFound();
@@ -80,10 +82,12 @@ public class ResultsController(RaceDayDbContext db) : ControllerBase
         result.Points = request.Points;
         await db.SaveChangesAsync();
 
-        return Ok(ToResponse(result));
+        var totals = await TotalsAsync(new[] { result.Enrolment.EventId });
+        return Ok(ToResponse(result, totals));
     }
 
     /// <summary>View your own results (Participant only).</summary>
+    /// <remarks>Each result includes the event name and date, your category, finish time, position and the number of finishers.</remarks>
     /// <response code="200">Your results.</response>
     /// <response code="401">Not logged in.</response>
     /// <response code="403">Only Participants have personal results.</response>
@@ -97,14 +101,16 @@ public class ResultsController(RaceDayDbContext db) : ControllerBase
         var userId = User.GetUserId();
         var results = await db.Results.AsNoTracking()
             .Include(r => r.Enrolment).ThenInclude(en => en!.Event)
+            .Include(r => r.Enrolment).ThenInclude(en => en!.Category)
             .Include(r => r.Enrolment).ThenInclude(en => en!.Participant).ThenInclude(p => p!.Profile)
             .Where(r => r.Enrolment!.ParticipantId == userId)
             .ToListAsync();
 
-        return Ok(results.Select(ToResponse).ToList());
+        var totals = await TotalsAsync(results.Select(r => r.Enrolment!.EventId).Distinct().ToList());
+        return Ok(results.OrderByDescending(r => r.Enrolment!.Event!.Date).Select(r => ToResponse(r, totals)).ToList());
     }
 
-    /// <summary>View all results for an event, fastest position first (any logged-in user).</summary>
+    /// <summary>View all results for an event, best position first (any logged-in user).</summary>
     /// <response code="200">The results.</response>
     /// <response code="401">Not logged in.</response>
     /// <response code="404">No event with this id.</response>
@@ -119,24 +125,46 @@ public class ResultsController(RaceDayDbContext db) : ControllerBase
 
         var results = await db.Results.AsNoTracking()
             .Include(r => r.Enrolment).ThenInclude(en => en!.Event)
+            .Include(r => r.Enrolment).ThenInclude(en => en!.Category)
             .Include(r => r.Enrolment).ThenInclude(en => en!.Participant).ThenInclude(p => p!.Profile)
             .Where(r => r.Enrolment!.EventId == eventId)
             .OrderBy(r => r.Position)
             .ToListAsync();
 
-        return Ok(results.Select(ToResponse).ToList());
+        var totals = await TotalsAsync(new[] { eventId });
+        return Ok(results.Select(r => ToResponse(r, totals)).ToList());
     }
 
-    private static ResultResponse ToResponse(Result r) => new()
+    /// <summary>Number of recorded results per event.</summary>
+    private async Task<Dictionary<int, int>> TotalsAsync(IReadOnlyCollection<int> eventIds)
     {
-        Id = r.Id,
-        EnrolmentId = r.EnrolmentId,
-        EventId = r.Enrolment?.EventId ?? 0,
-        EventName = r.Enrolment?.Event?.Name ?? string.Empty,
-        ParticipantId = r.Enrolment?.ParticipantId ?? 0,
-        ParticipantName = r.Enrolment?.Participant?.Profile?.FullName ?? string.Empty,
-        FinishTime = r.FinishTime,
-        Position = r.Position,
-        Points = r.Points
-    };
+        if (eventIds.Count == 0) return new Dictionary<int, int>();
+
+        return await db.Results.AsNoTracking()
+            .Where(r => eventIds.Contains(r.Enrolment!.EventId))
+            .GroupBy(r => r.Enrolment!.EventId)
+            .Select(g => new { EventId = g.Key, Count = g.Count() })
+            .ToDictionaryAsync(x => x.EventId, x => x.Count);
+    }
+
+    private static ResultResponse ToResponse(Result r, IReadOnlyDictionary<int, int> totals)
+    {
+        var eventId = r.Enrolment?.EventId ?? 0;
+        return new ResultResponse
+        {
+            Id = r.Id,
+            EnrolmentId = r.EnrolmentId,
+            EventId = eventId,
+            EventName = r.Enrolment?.Event?.Name ?? string.Empty,
+            EventDate = r.Enrolment?.Event?.Date ?? default,
+            CategoryId = r.Enrolment?.CategoryId ?? 0,
+            CategoryName = r.Enrolment?.Category?.Name ?? string.Empty,
+            ParticipantId = r.Enrolment?.ParticipantId ?? 0,
+            ParticipantName = r.Enrolment?.Participant?.Profile?.FullName ?? string.Empty,
+            TotalFinishers = totals.TryGetValue(eventId, out var total) ? total : 0,
+            FinishTime = r.FinishTime,
+            Position = r.Position,
+            Points = r.Points
+        };
+    }
 }
