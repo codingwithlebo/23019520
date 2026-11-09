@@ -1,8 +1,10 @@
 -- ============================================================
--- RaceDay System - Database Schema (revision 2)
+-- RaceDay System - Database Schema (revision 3)
 -- Matches the ERD in /docs/raceday_erd.png
--- Revision 2 adds Event.DistanceKm and Event.EventType, which the
--- Part 2 brief requires for every event.
+-- Revision 2 added Event.DistanceKm and Event.EventType (Part 2 brief).
+-- Revision 3 adds Enrolment.Status (Pending/Confirmed) and the image columns
+-- Event.BannerBlobName and UserProfile.ProfilePictureBlobName (Part 3 brief).
+-- The images themselves live in Azure Blob Storage; these columns hold the blob name.
 -- Run in SSMS. Safe to re-run: it drops and recreates the tables.
 -- ============================================================
 
@@ -44,6 +46,7 @@ CREATE TABLE UserProfile (
     FullName NVARCHAR(150) NOT NULL,
     Phone    NVARCHAR(20)  NULL,
     Bio      NVARCHAR(500) NULL,
+    ProfilePictureBlobName NVARCHAR(200) NULL,
     CONSTRAINT UQ_UserProfile_UserId UNIQUE (UserId),
     CONSTRAINT FK_UserProfile_User FOREIGN KEY (UserId)
         REFERENCES [User](Id) ON DELETE CASCADE
@@ -62,6 +65,7 @@ CREATE TABLE Event (
     Location    NVARCHAR(255)  NOT NULL,
     DistanceKm  DECIMAL(6,2)   NOT NULL,
     EventType   NVARCHAR(10)   NOT NULL,
+    BannerBlobName NVARCHAR(200) NULL,
     CONSTRAINT CHK_Event_DistanceKm CHECK (DistanceKm > 0),
     CONSTRAINT CHK_Event_EventType  CHECK (EventType IN ('Run', 'Walk', 'Cycle')),
     CONSTRAINT FK_Event_Organiser FOREIGN KEY (OrganiserId)
@@ -92,6 +96,8 @@ CREATE TABLE Enrolment (
     EventId       INT NOT NULL,
     CategoryId    INT NOT NULL,
     EnrolmentDate DATETIME NOT NULL DEFAULT GETDATE(),
+    Status        NVARCHAR(20) NOT NULL DEFAULT 'Pending',
+    CONSTRAINT CHK_Enrolment_Status CHECK (Status IN ('Pending', 'Confirmed')),
     CONSTRAINT UQ_Enrolment_Participant_Event UNIQUE (ParticipantId, EventId),
     CONSTRAINT FK_Enrolment_Participant FOREIGN KEY (ParticipantId)
         REFERENCES [User](Id),
@@ -157,10 +163,10 @@ INSERT INTO Category (EventId, Name, Description) VALUES
 (3, 'Senior', 'Riders 40 and older');
 GO
 
-INSERT INTO Enrolment (ParticipantId, EventId, CategoryId) VALUES
-(2, 1, 1),
-(3, 1, 2),
-(2, 2, 4);
+INSERT INTO Enrolment (ParticipantId, EventId, CategoryId, Status) VALUES
+(2, 1, 1, 'Confirmed'),
+(3, 1, 2, 'Confirmed'),
+(2, 2, 4, 'Pending');
 GO
 
 INSERT INTO Result (EnrolmentId, FinishTime, Position, Points) VALUES
