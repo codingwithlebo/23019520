@@ -577,7 +577,7 @@ The demonstration includes the Swagger interface, API endpoint testing, and the 
 
 [Watch the RaceDay Parts 2 and 3 Demonstration](https://youtu.be/DpA99m9e8uI)
 
-Replace the placeholders with the actual accessible video links before submission.
+(https://youtu.be/DpA99m9e8uI)
 
 ---
 
