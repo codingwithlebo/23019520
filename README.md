@@ -521,6 +521,25 @@ The successful workflow execution confirms that the configured repository struct
 
 ![Successful GitHub Actions validation](docs/ci-green-build.png)
 
+
+## GitHub Actions
+
+GitHub Actions is used to automate repository validation and ensure that the required project structure and documentation files are present.
+
+The workflow is located at:
+
+`.github/workflows/validate-structure.yml`
+
+### Workflow execution screenshots
+
+**Successful GitHub Actions build**
+
+![GitHub Actions successful build](docs/ci-green-build.png)
+
+**Additional GitHub Actions screenshot**
+
+![GitHub Actions workflow screenshot](docs/Screenshot%202026-09-04%20225024.png)
+
 The workflow should be understood as repository validation; it does not by itself establish that every application feature or deployment has passed automated testing.
 
 ---
