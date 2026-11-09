@@ -34,3 +34,17 @@ public static class EventTypes
         return false;
     }
 }
+
+public static class EnrolmentStatuses
+{
+    public const string Pending = "Pending";
+    public const string Confirmed = "Confirmed";
+
+    public static bool TryNormalize(string? value, out string status)
+    {
+        status = string.Empty;
+        if (string.Equals(value?.Trim(), Pending, StringComparison.OrdinalIgnoreCase)) { status = Pending; return true; }
+        if (string.Equals(value?.Trim(), Confirmed, StringComparison.OrdinalIgnoreCase)) { status = Confirmed; return true; }
+        return false;
+    }
+}
