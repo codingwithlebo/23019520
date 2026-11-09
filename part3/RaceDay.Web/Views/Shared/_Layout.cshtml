@@ -1,0 +1,81 @@
+@{
+    var user = Context.Session.GetUser();
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+    var action = ViewContext.RouteData.Values["action"]?.ToString();
+    string Active(string c, string? a = null) => controller == c && (a is null || action == a) ? "active" : "";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@(ViewData["Title"] ?? "RaceDay") · RaceDay</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark rd-navbar">
+            <div class="container">
+                <a class="navbar-brand rd-brand" asp-controller="Home" asp-action="Index">RACE<span>DAY</span></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+                        aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="mainNav">
+                    <ul class="navbar-nav me-auto">
+                        @if (user is null)
+                        {
+                            <li class="nav-item"><a class="nav-link @Active("Home")" asp-controller="Home" asp-action="Index">Events</a></li>
+                        }
+                        else if (user.IsOrganiser)
+                        {
+                            <li class="nav-item"><a class="nav-link @Active("Organiser", "Dashboard")" asp-controller="Organiser" asp-action="Dashboard">Dashboard</a></li>
+                            <li class="nav-item"><a class="nav-link @(Active("Organiser", "Events"))" asp-controller="Organiser" asp-action="Events">My events</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Organiser" asp-action="Create">Create event</a></li>
+                        }
+                        else
+                        {
+                            <li class="nav-item"><a class="nav-link @Active("Home")" asp-controller="Home" asp-action="Index">Events</a></li>
+                            <li class="nav-item"><a class="nav-link @Active("Participant", "MyEnrolments")" asp-controller="Participant" asp-action="MyEnrolments">My enrolments</a></li>
+                            <li class="nav-item"><a class="nav-link @Active("Participant", "MyResults")" asp-controller="Participant" asp-action="MyResults">My results</a></li>
+                        }
+                    </ul>
+                    <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+                        @if (user is null)
+                        {
+                            <li class="nav-item"><a class="nav-link @Active("Account", "Login")" asp-controller="Account" asp-action="Login">Log in</a></li>
+                            <li class="nav-item"><a class="btn btn-primary btn-sm" asp-controller="Account" asp-action="Register">Register</a></li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link @Active("Profile")" asp-controller="Profile" asp-action="Index">
+                                    @user.FullName <span class="badge rd-role">@user.Role</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-outline-light btn-sm">Log out</button>
+                                </form>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container py-4">
+        @await Html.PartialAsync("_Alerts")
+        @RenderBody()
+    </main>
+
+    <footer class="rd-footer">
+        <div class="container">RACEDAY &middot; Run it. Walk it. Ride it.</div>
+    </footer>
+
+    <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

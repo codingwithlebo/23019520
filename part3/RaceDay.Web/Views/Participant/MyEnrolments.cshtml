@@ -1,0 +1,45 @@
+@model List<EnrolmentDto>
+@{
+    ViewData["Title"] = "My enrolments";
+}
+<h1 class="rd-heading mb-3">My enrolments</h1>
+
+@if (Model.Count == 0)
+{
+    <div class="rd-empty">
+        <p class="h5">You haven't entered any events yet.</p>
+        <a class="btn btn-primary" asp-controller="Home" asp-action="Index">Browse events</a>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table rd-table align-middle">
+            <thead>
+                <tr><th>Event</th><th>Date</th><th>Category</th><th>Status</th><th>Entered on</th><th></th></tr>
+            </thead>
+            <tbody>
+                @foreach (var enrolment in Model)
+                {
+                    <tr>
+                        <td><a asp-controller="Events" asp-action="Details" asp-route-id="@enrolment.EventId">@enrolment.EventName</a></td>
+                        <td>@Format.ShortDate(enrolment.EventDate)</td>
+                        <td>@enrolment.CategoryName</td>
+                        <td><span class="badge @Format.StatusClass(enrolment.Status)">@enrolment.Status</span></td>
+                        <td>@Format.ShortDate(enrolment.EnrolmentDate)</td>
+                        <td class="text-end">
+                            <form asp-controller="Participant" asp-action="CancelEnrolment" asp-route-id="@enrolment.Id" method="post"
+                                  onsubmit="return confirm('Cancel this entry?');">
+                                <button type="submit" class="btn btn-outline-danger btn-sm">Cancel</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <p class="text-muted small">
+        <span class="badge status-confirmed">Confirmed</span> the organiser has confirmed your place.
+        <span class="badge status-pending ms-2">Pending</span> waiting for the organiser to confirm.
+    </p>
+}

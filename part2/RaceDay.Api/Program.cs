@@ -7,10 +7,22 @@ using RaceDay.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 builder.Services.AddDbContext<RaceDayDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("RaceDayDb")));
 
 builder.Services.AddSingleton<IPasswordService, PasswordService>();
+// All image storage lives in the API; the MVC app only ever calls the API.
+// Storage:Provider is "Azure" (Azure Blob Storage, the default) or "Local" (a folder under the API's wwwroot).
+if (string.Equals(builder.Configuration["Storage:Provider"], "Local", StringComparison.OrdinalIgnoreCase))
+{
+    var localPath = Path.Combine(builder.Environment.ContentRootPath, builder.Configuration["Storage:LocalPath"] ?? "wwwroot/uploads");
+    builder.Services.AddSingleton<IBlobStorageService>(new LocalFileStorageService(localPath));
+}
+else
+{
+    builder.Services.AddSingleton<IBlobStorageService, AzureBlobStorageService>();
+}
 
 // Session-based authentication: login issues a cookie holding the user's id and role.
 builder.Services
@@ -57,6 +69,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
+app.UseStaticFiles();
 
 // Apply code-first migrations on startup (skipped for the in-memory test database).
 if (!app.Environment.IsEnvironment("Testing"))

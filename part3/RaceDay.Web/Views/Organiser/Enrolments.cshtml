@@ -1,0 +1,53 @@
+@model EnrolmentsViewModel
+@{
+    ViewData["Title"] = "Enrolments";
+}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Events">My events</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.Event.Name</li>
+    </ol>
+</nav>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="rd-heading mb-0">Enrolments</h1>
+    <a class="btn btn-outline-secondary" asp-action="Results" asp-route-eventId="@Model.Event.Id">Capture results</a>
+</div>
+<p class="text-muted">Everyone who has entered <strong>@Model.Event.Name</strong>. Confirm a participant's place once you're happy to have them.</p>
+
+@if (Model.Enrolments.Count == 0)
+{
+    <div class="rd-empty"><p class="mb-0">Nobody has entered this event yet.</p></div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table rd-table align-middle">
+            <thead><tr><th>Participant</th><th>Category</th><th>Status</th><th>Entered on</th><th></th></tr></thead>
+            <tbody>
+                @foreach (var enrolment in Model.Enrolments)
+                {
+                    <tr>
+                        <td>@enrolment.ParticipantName</td>
+                        <td>@enrolment.CategoryName</td>
+                        <td><span class="badge @Format.StatusClass(enrolment.Status)">@enrolment.Status</span></td>
+                        <td>@Format.ShortDate(enrolment.EnrolmentDate)</td>
+                        <td class="text-end">
+                            <form asp-action="SetStatus" asp-route-eventId="@Model.Event.Id" asp-route-id="@enrolment.Id" method="post">
+                                @if (enrolment.Status == "Confirmed")
+                                {
+                                    <input type="hidden" name="status" value="Pending" />
+                                    <button type="submit" class="btn btn-outline-secondary btn-sm">Mark pending</button>
+                                }
+                                else
+                                {
+                                    <input type="hidden" name="status" value="Confirmed" />
+                                    <button type="submit" class="btn btn-success btn-sm">Confirm</button>
+                                }
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

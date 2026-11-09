@@ -30,6 +30,7 @@ public class RaceDayDbContext(DbContextOptions<RaceDayDbContext> options) : DbCo
             e.Property(x => x.FullName).HasMaxLength(150).IsRequired();
             e.Property(x => x.Phone).HasMaxLength(20);
             e.Property(x => x.Bio).HasMaxLength(500);
+            e.Property(x => x.ProfilePictureBlobName).HasMaxLength(200);
             e.HasIndex(x => x.UserId).IsUnique();
             e.HasOne(x => x.User).WithOne(u => u.Profile)
                 .HasForeignKey<UserProfile>(x => x.UserId)
@@ -49,6 +50,7 @@ public class RaceDayDbContext(DbContextOptions<RaceDayDbContext> options) : DbCo
             e.Property(x => x.Location).HasMaxLength(255).IsRequired();
             e.Property(x => x.DistanceKm).HasPrecision(6, 2);
             e.Property(x => x.EventType).HasMaxLength(10).IsRequired();
+            e.Property(x => x.BannerBlobName).HasMaxLength(200);
             e.HasIndex(x => x.OrganiserId);
             e.HasOne(x => x.Organiser).WithMany(u => u.OrganisedEvents)
                 .HasForeignKey(x => x.OrganiserId)
@@ -68,8 +70,9 @@ public class RaceDayDbContext(DbContextOptions<RaceDayDbContext> options) : DbCo
 
         modelBuilder.Entity<Enrolment>(e =>
         {
-            e.ToTable("Enrolment");
+            e.ToTable("Enrolment", t => t.HasCheckConstraint("CHK_Enrolment_Status", "[Status] IN ('Pending', 'Confirmed')"));
             e.Property(x => x.EnrolmentDate).HasColumnType("datetime");
+            e.Property(x => x.Status).HasMaxLength(20).IsRequired().HasDefaultValue(EnrolmentStatuses.Pending);
             e.HasIndex(x => new { x.ParticipantId, x.EventId }).IsUnique();
             e.HasIndex(x => new { x.EventId, x.CategoryId });
             e.HasOne(x => x.Participant).WithMany(u => u.Enrolments)
