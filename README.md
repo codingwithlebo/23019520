@@ -192,7 +192,13 @@ Wait about a minute for the database to be created, then open http://localhost:8
 
 ![Swagger running in Docker](docs/swagger-docker.png)
 
-![Docker Desktop](docs/docker-desktop.png)
+![Docker screenshot 1](docs/Screenshot%202026-11-09%20191949.png)
+
+![Docker screenshot 2](docs/Screenshot%202026-11-09%20192003.png)
+
+![Docker screenshot 3](docs/Screenshot%202026-11-09%20192018.png)
+
+![Docker screenshot 4](docs/Screenshot%202026-11-09%20192029.png)
 
 ## Image storage
 
