@@ -1,0 +1,12 @@
+# Starts the RaceDay MVC web app in a container.
+# The RaceDay API runs on the host (dotnet run) and the container reaches it through host.docker.internal.
+services:
+  web:
+    build: ./RaceDay.Web
+    image: raceday-web
+    ports:
+      - "8080:8080"
+    environment:
+      Api__BaseUrl: http://host.docker.internal:5080
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

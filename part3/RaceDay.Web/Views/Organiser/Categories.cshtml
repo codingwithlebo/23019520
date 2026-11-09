@@ -1,0 +1,63 @@
+@model CategoriesViewModel
+@{
+    ViewData["Title"] = "Categories";
+}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Events">My events</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.Event.Name</li>
+    </ol>
+</nav>
+<h1 class="rd-heading mb-1">Categories</h1>
+<p class="text-muted">Add age or distance categories for <strong>@Model.Event.Name</strong>, such as Under 20, Senior, 10km or 21km. Participants pick one when they enter.</p>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        @if (Model.Categories.Count == 0)
+        {
+            <div class="rd-empty"><p class="mb-0">No categories yet. Add the first one.</p></div>
+        }
+        else
+        {
+            <table class="table rd-table align-middle">
+                <thead><tr><th>Category</th><th>Description</th><th></th></tr></thead>
+                <tbody>
+                    @foreach (var category in Model.Categories)
+                    {
+                        <tr>
+                            <td><strong>@category.Name</strong></td>
+                            <td class="text-muted">@category.Description</td>
+                            <td class="text-end">
+                                <form asp-action="DeleteCategory" asp-route-eventId="@Model.Event.Id" asp-route-id="@category.Id" method="post"
+                                      onsubmit="return confirm('Remove this category?');">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">Remove</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+    <div class="col-lg-5">
+        <div class="card rd-form-card">
+            <div class="card-body p-4">
+                <h2 class="rd-subheading">Add a category</h2>
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                <form asp-action="AddCategory" asp-route-eventId="@Model.Event.Id" method="post">
+                    <div class="mb-3">
+                        <label asp-for="Form.Name" class="form-label">Name</label>
+                        <input asp-for="Form.Name" class="form-control" />
+                        <span asp-validation-for="Form.Name" class="text-danger small"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Form.Description" class="form-label">Description</label>
+                        <input asp-for="Form.Description" class="form-control" />
+                        <span asp-validation-for="Form.Description" class="text-danger small"></span>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add category</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

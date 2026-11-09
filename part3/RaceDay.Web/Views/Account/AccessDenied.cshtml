@@ -1,0 +1,17 @@
+@{
+    ViewData["Title"] = "No access";
+    var user = Context.Session.GetUser();
+}
+<div class="text-center py-5">
+    <div class="rd-error-code">403</div>
+    <h1 class="rd-heading">That page isn't for your role</h1>
+    <p class="lead text-muted">Your account doesn't have access to that area.</p>
+    @if (user is { IsOrganiser: true })
+    {
+        <a class="btn btn-primary" asp-controller="Organiser" asp-action="Dashboard">Go to your dashboard</a>
+    }
+    else
+    {
+        <a class="btn btn-primary" asp-controller="Home" asp-action="Index">Back to events</a>
+    }
+</div>
