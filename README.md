@@ -192,6 +192,8 @@ Wait about a minute for the database to be created, then open http://localhost:8
 
 ![Swagger running in Docker](docs/swagger-docker.png)
 
+![Docker Desktop](docs/docker-desktop.png)
+
 ## Image storage
 
 Banner and profile pictures are saved to `wwwroot`.
