@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using RaceDay.Api.Services;
 
 namespace RaceDay.Tests;
 
@@ -33,6 +35,10 @@ public class RaceDayFactory : WebApplicationFactory<Program>
             if (existing is not null) services.Remove(existing);
 
             services.AddDbContext<RaceDayDbContext>(options => options.UseInMemoryDatabase(_databaseName));
+
+            // Tests never talk to Azure: images go to an in-memory fake instead.
+            services.RemoveAll<IBlobStorageService>();
+            services.AddSingleton<IBlobStorageService, FakeBlobStorageService>();
         });
     }
 }
