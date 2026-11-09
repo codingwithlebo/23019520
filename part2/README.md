@@ -36,6 +36,33 @@ Prerequisites: Visual Studio 2022 (ASP.NET workload), .NET 8 SDK, SQL Server (Lo
 3. Call any endpoint with **Try it out**. Each one shows its purpose, the data it expects and the responses it returns.
 4. `POST /api/auth/logout` to end the session, then log in as the other role to see role-based access.
 
+## Image storage (Azure Blob Storage)
+
+Event banners and profile pictures are stored in **Azure Blob Storage**, and only the API talks to Azure. The MVC application uploads and downloads images through the API endpoints below.
+
+| Endpoint | Purpose |
+|---|---|
+| `POST /api/events/{id}/banner` | Organiser uploads or replaces an event banner (multipart field `file`, JPG/PNG/GIF/WebP, max 5 MB) |
+| `GET /api/events/{id}/banner` | Serves the banner |
+| `POST /api/users/{id}/profile/picture` | Uploads or replaces your own profile picture |
+| `GET /api/users/{id}/profile/picture` | Serves a profile picture |
+
+The container is private, so images are only reachable through the API. The database stores just the blob name (`Event.BannerBlobName`, `UserProfile.ProfilePictureBlobName`).
+
+To configure it, create an Azure Storage account and set the connection string with user secrets, so it never goes into Git:
+
+```
+cd part2/RaceDay.Api
+dotnet user-secrets init
+dotnet user-secrets set "AzureBlob:ConnectionString" "<your storage account connection string>"
+```
+
+The container (`raceday-images` by default, see `AzureBlob:ContainerName`) is created automatically on first upload. Without a connection string the API still runs, and the upload and download endpoints answer **503**. The unit tests use an in-memory fake, so CI needs no Azure account.
+
+## Enrolment status
+
+New enrolments start as **Pending**. The Organiser who owns the event confirms them with `PUT /api/enrolments/{id}/status` (`Pending` or `Confirmed`).
+
 ## Unit tests
 
 ```
@@ -64,7 +91,8 @@ Documented in full at the bottom of [`docs/api-endpoint-plan.md`](../docs/api-en
 2. Session (cookie) authentication, with an added `POST /api/auth/logout` endpoint.
 3. Organiser registration protected by an invite code.
 4. Results for an event require login.
-5. The user entity class is called `AppUser` in C# (to avoid a clash with `ControllerBase.User`) but maps to the `User` table from the ERD.
+5. Part 3 additions (enrolment status, image upload endpoints, richer results, organiser dashboard, event filters) are described in the "Changes in revision 3" section of the endpoint plan.
+6. The user entity class is called `AppUser` in C# (to avoid a clash with `ControllerBase.User`) but maps to the `User` table from the ERD.
 
 ## Video
 

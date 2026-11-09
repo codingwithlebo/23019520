@@ -103,6 +103,13 @@ namespace RaceDay.Api.Migrations
                     b.Property<int>("ParticipantId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasDefaultValue("Pending");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
@@ -112,7 +119,10 @@ namespace RaceDay.Api.Migrations
                     b.HasIndex("ParticipantId", "EventId")
                         .IsUnique();
 
-                    b.ToTable("Enrolment", (string)null);
+                    b.ToTable("Enrolment", null, t =>
+                        {
+                            t.HasCheckConstraint("CHK_Enrolment_Status", "[Status] IN ('Pending', 'Confirmed')");
+                        });
                 });
 
             modelBuilder.Entity("RaceDay.Api.Models.Event", b =>
@@ -122,6 +132,10 @@ namespace RaceDay.Api.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("BannerBlobName")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime");
@@ -216,6 +230,10 @@ namespace RaceDay.Api.Migrations
                     b.Property<string>("Phone")
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("ProfilePictureBlobName")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");

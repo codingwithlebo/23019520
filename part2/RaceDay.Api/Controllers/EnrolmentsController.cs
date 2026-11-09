@@ -48,7 +48,8 @@ public class EnrolmentsController(RaceDayDbContext db) : ControllerBase
             ParticipantId = userId,
             EventId = ev.Id,
             CategoryId = category.Id,
-            EnrolmentDate = DateTime.UtcNow
+            EnrolmentDate = DateTime.UtcNow,
+            Status = EnrolmentStatuses.Pending
         };
         db.Enrolments.Add(enrolment);
         await db.SaveChangesAsync();
@@ -65,7 +66,9 @@ public class EnrolmentsController(RaceDayDbContext db) : ControllerBase
             EventName = ev.Name,
             CategoryId = category.Id,
             CategoryName = category.Name,
-            EnrolmentDate = enrolment.EnrolmentDate
+            EnrolmentDate = enrolment.EnrolmentDate,
+            EventDate = ev.Date,
+            Status = enrolment.Status
         };
         return Created($"/api/enrolments/{enrolment.Id}", response);
     }
@@ -119,6 +122,38 @@ public class EnrolmentsController(RaceDayDbContext db) : ControllerBase
         return Ok(enrolments.Select(ToResponse).ToList());
     }
 
+    /// <summary>Confirm an enrolment, or set it back to Pending (the Organiser who owns the event).</summary>
+    /// <remarks>New enrolments start as Pending.</remarks>
+    /// <response code="200">The updated enrolment.</response>
+    /// <response code="400">Status is not Pending or Confirmed.</response>
+    /// <response code="401">Not logged in.</response>
+    /// <response code="403">Only the Organiser who owns the event can change the status.</response>
+    /// <response code="404">No enrolment with this id.</response>
+    [HttpPut("enrolments/{id:int}/status")]
+    [Authorize(Roles = Roles.Organiser)]
+    [ProducesResponseType(typeof(EnrolmentResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateStatus(int id, EnrolmentStatusRequest request)
+    {
+        if (!EnrolmentStatuses.TryNormalize(request.Status, out var status))
+            return BadRequest(new { message = "Status must be Pending or Confirmed." });
+
+        var enrolment = await db.Enrolments
+            .Include(en => en.Event).Include(en => en.Category)
+            .Include(en => en.Participant).ThenInclude(p => p!.Profile)
+            .FirstOrDefaultAsync(en => en.Id == id);
+        if (enrolment is null) return NotFound();
+        if (enrolment.Event!.OrganiserId != User.GetUserId()) return Forbid();
+
+        enrolment.Status = status;
+        await db.SaveChangesAsync();
+
+        return Ok(ToResponse(enrolment));
+    }
+
     /// <summary>Cancel one of your own enrolments (Participant only).</summary>
     /// <response code="204">Enrolment cancelled.</response>
     /// <response code="401">Not logged in.</response>
@@ -151,6 +186,8 @@ public class EnrolmentsController(RaceDayDbContext db) : ControllerBase
         EventName = en.Event?.Name ?? string.Empty,
         CategoryId = en.CategoryId,
         CategoryName = en.Category?.Name ?? string.Empty,
-        EnrolmentDate = en.EnrolmentDate
+        EnrolmentDate = en.EnrolmentDate,
+        EventDate = en.Event?.Date ?? default,
+        Status = en.Status
     };
 }

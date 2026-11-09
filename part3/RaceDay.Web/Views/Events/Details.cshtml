@@ -1,0 +1,110 @@
+@model EventDetailsViewModel
+@{
+    var ev = Model.Event;
+    var user = Context.Session.GetUser();
+    ViewData["Title"] = ev.Name;
+}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Events</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@ev.Name</li>
+    </ol>
+</nav>
+
+<div class="card rd-detail mb-4">
+    @if (ev.BannerUrl is not null)
+    {
+        <img class="rd-banner" src="@Url.Action("EventBanner", "Media", new { id = ev.Id })" alt="Banner for @ev.Name" />
+    }
+    else
+    {
+        <div class="rd-banner rd-card-placeholder"><span>@Format.TypeEmoji(ev.EventType)</span></div>
+    }
+    <div class="card-body">
+        <div class="mb-2"><span class="badge rd-type">@ev.EventType</span> <span class="badge rd-distance">@Format.Distance(ev.DistanceKm)</span></div>
+        <h1 class="rd-heading">@ev.Name</h1>
+        <dl class="row mb-3">
+            <dt class="col-sm-3">When</dt><dd class="col-sm-9">@Format.LongDate(ev.Date)</dd>
+            <dt class="col-sm-3">Where</dt><dd class="col-sm-9">@ev.Location</dd>
+            <dt class="col-sm-3">Distance</dt><dd class="col-sm-9">@Format.Distance(ev.DistanceKm)</dd>
+            <dt class="col-sm-3">Type</dt><dd class="col-sm-9">@ev.EventType</dd>
+        </dl>
+        @if (!string.IsNullOrWhiteSpace(ev.Description))
+        {
+            <p>@ev.Description</p>
+        }
+        @if (user is { IsOrganiser: true } && ev.OrganiserId == user.Id)
+        {
+            <a class="btn btn-outline-secondary" asp-controller="Organiser" asp-action="Edit" asp-route-id="@ev.Id">Edit this event</a>
+            <a class="btn btn-outline-secondary" asp-controller="Organiser" asp-action="Categories" asp-route-eventId="@ev.Id">Manage categories</a>
+        }
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <h2 class="rd-subheading">Categories</h2>
+        @if (Model.Categories.Count == 0)
+        {
+            <p class="text-muted">The organiser hasn't added categories yet.</p>
+        }
+        else
+        {
+            <ul class="list-group">
+                @foreach (var category in Model.Categories)
+                {
+                    <li class="list-group-item">
+                        <strong>@category.Name</strong>
+                        @if (!string.IsNullOrWhiteSpace(category.Description))
+                        {
+                            <div class="text-muted small">@category.Description</div>
+                        }
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+
+    <div class="col-lg-6">
+        <h2 class="rd-subheading">Enter this event</h2>
+        @if (user is null)
+        {
+            <div class="rd-empty">
+                <p>Log in as a participant to enter this event.</p>
+                <a class="btn btn-primary" asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Context.Request.Path">Log in</a>
+                <a class="btn btn-outline-secondary" asp-controller="Account" asp-action="Register">Create an account</a>
+            </div>
+        }
+        else if (user.IsOrganiser)
+        {
+            <p class="text-muted">Organisers manage events. Log in as a participant to enter races.</p>
+        }
+        else if (Model.MyEnrolment is not null)
+        {
+            <div class="alert alert-light border">
+                You're entered in <strong>@Model.MyEnrolment.CategoryName</strong>.
+                <span class="badge @Format.StatusClass(Model.MyEnrolment.Status) ms-1">@Model.MyEnrolment.Status</span>
+            </div>
+            <a asp-controller="Participant" asp-action="MyEnrolments">View my enrolments</a>
+        }
+        else if (Model.Categories.Count == 0)
+        {
+            <p class="text-muted">Entries open once the organiser adds categories.</p>
+        }
+        else
+        {
+            <form asp-controller="Events" asp-action="Enrol" method="post" class="card card-body">
+                <input type="hidden" name="eventId" value="@ev.Id" />
+                <label class="form-label" for="categoryId">Choose your category</label>
+                <select class="form-select mb-3" id="categoryId" name="categoryId" required>
+                    <option value="">Select a category...</option>
+                    @foreach (var category in Model.Categories)
+                    {
+                        <option value="@category.Id">@category.Name</option>
+                    }
+                </select>
+                <button type="submit" class="btn btn-primary">Enrol now</button>
+            </form>
+        }
+    </div>
+</div>

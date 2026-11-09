@@ -1,0 +1,52 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="rd-heading mb-0">Organiser dashboard</h1>
+    <a class="btn btn-primary" asp-action="Create">Create event</a>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4"><div class="rd-stat"><div class="rd-stat-number">@Model.Events.Count</div><div class="rd-stat-label">Events created</div></div></div>
+    <div class="col-md-4"><div class="rd-stat"><div class="rd-stat-number">@Model.Upcoming.Count</div><div class="rd-stat-label">Upcoming events</div></div></div>
+    <div class="col-md-4"><div class="rd-stat"><div class="rd-stat-number">@Model.TotalEnrolments</div><div class="rd-stat-label">Total enrolments</div></div></div>
+</div>
+
+@if (Model.Events.Count == 0)
+{
+    <div class="rd-empty">
+        <p class="h5">You haven't created any events yet.</p>
+        <a class="btn btn-primary" asp-action="Create">Create your first event</a>
+    </div>
+}
+else
+{
+    <h2 class="rd-subheading">Your events</h2>
+    <div class="table-responsive">
+        <table class="table rd-table align-middle">
+            <thead>
+                <tr><th>Event</th><th>Date</th><th>Type</th><th class="text-center">Enrolments</th><th></th></tr>
+            </thead>
+            <tbody>
+                @foreach (var ev in Model.Events.OrderBy(e => e.Date))
+                {
+                    var isUpcoming = ev.Date >= DateTime.Now;
+                    <tr>
+                        <td>
+                            <a asp-controller="Events" asp-action="Details" asp-route-id="@ev.Id">@ev.Name</a>
+                            @if (isUpcoming) { <span class="badge rd-type ms-1">Upcoming</span> }
+                        </td>
+                        <td>@Format.LongDate(ev.Date)</td>
+                        <td>@ev.EventType &middot; @Format.Distance(ev.DistanceKm)</td>
+                        <td class="text-center"><span class="badge rd-distance">@ev.EnrolmentCount</span></td>
+                        <td class="text-end">
+                            <a class="btn btn-outline-secondary btn-sm" asp-action="Enrolments" asp-route-eventId="@ev.Id">Enrolments</a>
+                            <a class="btn btn-outline-secondary btn-sm" asp-action="Results" asp-route-eventId="@ev.Id">Results</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

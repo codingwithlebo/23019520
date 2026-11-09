@@ -1,0 +1,44 @@
+@model List<ResultDto>
+@{
+    ViewData["Title"] = "My results";
+}
+<h1 class="rd-heading mb-3">My results</h1>
+
+@if (Model.Count == 0)
+{
+    <div class="rd-empty">
+        <p class="h5">No results yet.</p>
+        <p class="text-muted mb-0">Once an organiser records your finish time after an event, your race history shows up here.</p>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table rd-table align-middle">
+            <thead>
+                <tr><th>Event</th><th>Date</th><th>Category</th><th>Finish time</th><th>Position</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var result in Model)
+                {
+                    <tr>
+                        <td><a asp-controller="Events" asp-action="Details" asp-route-id="@result.EventId">@result.EventName</a></td>
+                        <td>@Format.ShortDate(result.EventDate)</td>
+                        <td>@result.CategoryName</td>
+                        <td class="rd-time">@result.FinishTime</td>
+                        <td>
+                            @if (result.Position is { } position)
+                            {
+                                <strong>@Format.Ordinal(position)</strong> <span class="text-muted">out of @result.TotalFinishers finishers</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">&mdash;</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
