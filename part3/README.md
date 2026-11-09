@@ -81,3 +81,9 @@ YouTube (unlisted): _add link here_
 
 - The brief's API additions for this part (enrolment status, image upload endpoints, richer results, organiser dashboard, event filters) are documented in the "Changes in revision 3" section of `docs/api-endpoint-plan.md`.
 - Static assets (Bootstrap) are bundled in `wwwroot/lib`, so the app needs no internet access at runtime.
+
+## Roles
+
+**Organiser:** creates, edits and deletes events, uploads event banners, defines categories, views and confirms enrolments, records results, and sees the dashboard with total enrolments and upcoming events.
+
+**Participant:** browses and filters events, enrols by choosing a category, sees enrolment status (Pending or Confirmed), uploads a profile picture and views their own results.
