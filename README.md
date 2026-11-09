@@ -487,23 +487,33 @@ The following screenshots demonstrate the RaceDay API running in a Docker enviro
 
 
 
+## Docker Demonstration
+
+The following screenshots demonstrate the RaceDay API running in a Docker environment, including the Docker implementation.
+
 ### Docker implementation screenshots
 
-**Screenshot 1 — Docker setup**
+**Screenshot 1**
 
-![Docker screenshot 1](docs/Screenshot%202026-11-09%20191949.png)
+![Docker screenshot 1](docs/docker-1.png)
 
-**Screenshot 2 — Docker implementation**
+**Screenshot 2**
 
-![Docker screenshot 2](docs/Screenshot%202026-11-09%20192003.png)
+![Docker screenshot 2](docs/docker-2.png)
 
-**Screenshot 3 — Docker implementation**
+**Screenshot 3**
 
-![Docker screenshot 3](docs/Screenshot%202026-11-09%20192018.png)
+![Docker screenshot 3](docs/docker-3.png)
 
-**Screenshot 4 — Docker implementation**
+**Screenshot 4**
 
-![Docker screenshot 4](docs/Screenshot%202026-11-09%20192029.png)
+![Docker screenshot 4](docs/docker-4.png)
+
+After starting the containers, allow time for SQL Server to initialise before accessing the API.
+
+Swagger is available at:
+
+`http://localhost:8080/swagger`
 
 After starting the containers, allow time for SQL Server to initialise before accessing the API.
 
