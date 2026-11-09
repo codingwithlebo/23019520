@@ -317,7 +317,7 @@ Install the following development tools:
 ### 1. Clone the repository
 
 ```bash
-git clone <YOUR-GITHUB-REPOSITORY-URL>
+git clone https://github.com/codingwithlebo/23019520
 ```
 
 Navigate into the project directory:
@@ -479,16 +479,37 @@ The following screenshots demonstrate the RaceDay API running in a Docker enviro
 
 ![Swagger running in Docker](docs/swagger-docker.png)
 
-**Docker implementation screenshots**
+## Docker Demonstration
+
+The following screenshots demonstrate the RaceDay API running in a Docker environment, including the Swagger interface and Docker container setup.
+
+### Swagger running in Docker
+
+
+
+### Docker implementation screenshots
+
+**Screenshot 1 — Docker setup**
 
 ![Docker screenshot 1](docs/Screenshot%202026-11-09%20191949.png)
 
+**Screenshot 2 — Docker implementation**
+
 ![Docker screenshot 2](docs/Screenshot%202026-11-09%20192003.png)
+
+**Screenshot 3 — Docker implementation**
 
 ![Docker screenshot 3](docs/Screenshot%202026-11-09%20192018.png)
 
+**Screenshot 4 — Docker implementation**
+
 ![Docker screenshot 4](docs/Screenshot%202026-11-09%20192029.png)
 
+After starting the containers, allow time for SQL Server to initialise before accessing the API.
+
+Swagger is available at:
+
+`http://localhost:8080/swagger`
 After starting the containers, allow time for SQL Server to initialise before accessing the API.
 
 Swagger is available at:
