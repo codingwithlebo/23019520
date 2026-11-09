@@ -175,6 +175,27 @@ Part 3 will add the MVC web application with:
 * Azure Blob Storage integration
 * Docker containerisation
 
+  ## Run with Docker
+
+Requires Docker Desktop.
+
+```powershell
+cd part2\RaceDay.Api
+docker build -t raceday .
+docker run -d --name raceday-sql -e ACCEPT_EULA=Y -e "MSSQL_SA_PASSWORD=RaceDay#Pass123" -p 1433:1433 mcr.microsoft.com/mssql/server:2022-latest
+docker network create raceday-net
+docker network connect raceday-net raceday-sql
+docker run --rm --network raceday-net -p 8080:8080 -e "ConnectionStrings__RaceDayDb=Server=raceday-sql,1433;Database=RaceDay;User Id=sa;Password=RaceDay#Pass123;TrustServerCertificate=True" raceday
+```
+
+Wait about a minute for the database to be created, then open http://localhost:8080/swagger
+
+![Swagger running in Docker](docs/swagger-docker.png)
+
+## Image storage
+
+Banner and profile pictures are saved to `wwwroot`.
+
 ## Part 1 Deliverables
 
 The repository contains the required Part 1 planning and database deliverables:
