@@ -564,17 +564,18 @@ Recommended evidence includes:
 
 ### Video demonstrations
 
-**Part 1 — Planning and Database**
+**Part 1 — Planning and Database*
+(https://youtu.be/Zdhd0I0u4us)
 
-[Insert Part 1 demonstration video link]
 
-**Part 2 — RESTful API**
 
-[Insert Part 2 demonstration video link]
+## Video Demonstration — Parts 2 and 3
 
-**Part 3 — MVC Web Application**
+The following video provides a combined demonstration of the RaceDay RESTful API (Part 2) and MVC Web Application (Part 3).
 
-[Insert Part 3 demonstration video link]
+The demonstration includes the Swagger interface, API endpoint testing, and the MVC application with its available user functionality.
+
+[Watch the RaceDay Parts 2 and 3 Demonstration](https://youtu.be/DpA99m9e8uI)
 
 Replace the placeholders with the actual accessible video links before submission.
 
@@ -613,8 +614,7 @@ Part 2 and Part 3 extend the original planning and database foundation into a wo
 
 **Project:** RaceDay — Race Event Management System  
 **Module:** PROG6212  
-**Institution:** Rosebank College  
 **Project:** Portfolio of Evidence (POE)
 
-**Repository:** [Insert GitHub repository URL]
+
 
