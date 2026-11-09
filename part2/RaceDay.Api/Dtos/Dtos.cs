@@ -65,6 +65,9 @@ public class ProfileResponse
     public string FullName { get; set; } = string.Empty;
     public string? Phone { get; set; }
     public string? Bio { get; set; }
+
+    /// <summary>API route that serves the profile picture, or null when none has been uploaded.</summary>
+    public string? ProfilePictureUrl { get; set; }
 }
 
 // ---------- Events ----------
@@ -102,6 +105,15 @@ public class EventResponse
     public string Location { get; set; } = string.Empty;
     public decimal DistanceKm { get; set; }
     public string EventType { get; set; } = string.Empty;
+
+    /// <summary>API route that serves the banner image, or null when none has been uploaded.</summary>
+    public string? BannerUrl { get; set; }
+}
+
+/// <summary>An event plus its enrolment count, for the Organiser dashboard.</summary>
+public class OrganiserEventResponse : EventResponse
+{
+    public int EnrolmentCount { get; set; }
 }
 
 // ---------- Categories ----------
@@ -144,6 +156,17 @@ public class EnrolmentResponse
     public int CategoryId { get; set; }
     public string CategoryName { get; set; } = string.Empty;
     public DateTime EnrolmentDate { get; set; }
+    public DateTime EventDate { get; set; }
+
+    /// <summary>Pending or Confirmed.</summary>
+    public string Status { get; set; } = string.Empty;
+}
+
+public class EnrolmentStatusRequest
+{
+    /// <summary>Pending or Confirmed.</summary>
+    [Required]
+    public string Status { get; set; } = string.Empty;
 }
 
 // ---------- Results ----------
@@ -182,8 +205,14 @@ public class ResultResponse
     public int EnrolmentId { get; set; }
     public int EventId { get; set; }
     public string EventName { get; set; } = string.Empty;
+    public DateTime EventDate { get; set; }
+    public int CategoryId { get; set; }
+    public string CategoryName { get; set; } = string.Empty;
     public int ParticipantId { get; set; }
     public string ParticipantName { get; set; } = string.Empty;
+
+    /// <summary>How many participants have a recorded result for this event (for "47th of 312").</summary>
+    public int TotalFinishers { get; set; }
     public string? FinishTime { get; set; }
     public int? Position { get; set; }
     public int? Points { get; set; }
